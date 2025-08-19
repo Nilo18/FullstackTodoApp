@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { TasksService } from '../../services/tasks.service';
+import { AuthService } from '../../services/auth.service';
+import { HttpHeaders } from '@angular/common/http';
 
 @Component({
   selector: 'app-tasks',
@@ -12,14 +14,14 @@ export class TasksComponent {
   shouldUpdate: boolean = true; // Flag for preventing spamming PUT requests
   // loading: boolean = true;
 
-  constructor(private tasksService: TasksService) {}
+  constructor(private tasksService: TasksService, private authService: AuthService) {}
 
   ngOnInit() {
     // Subscribe to tasks$ to receive the latest value
     this.tasksService.tasks$.subscribe(tasks => { 
       this.tasks = tasks
     }) 
-    this.tasksService.getAllTasks()
+    this.tasksService.getAllTasks(this.authService.getAccessToken())
   }
 
   async deleteATask(id: string) {

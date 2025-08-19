@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject } from 'rxjs';
+import { HttpHeaders } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -12,10 +13,19 @@ export class TasksService {
   // BehaviorSubject is used to keep the latest value of the observable and emit to subscribers immediately
   private tasksSubject = new BehaviorSubject<any[]>([]) 
   tasks$ = this.tasksSubject.asObservable() // asObservable() exposes the BehaviorSubject as the regular observable
+  async getAllTasks(accessToken: any) {
+    try {
+        const headers = new HttpHeaders({
+          Authorization: `Bearer ${accessToken}`
+        })
 
-  async getAllTasks() {
-    const tasks = await this.http.get<any>(this.baseURL).toPromise()
-    this.tasksSubject.next(tasks) // next() changes the value of the subject
+      const tasks = await this.http.get<any>(this.baseURL, {headers, withCredentials: true}).toPromise()
+      this.tasksSubject.next(tasks) // next() changes the value of the subject
+    } catch(err) {
+      console.log('Error', err)
+      throw err
+    }
+
   }
 
   async addTask(task: {taskName: string, completed: boolean}) {
