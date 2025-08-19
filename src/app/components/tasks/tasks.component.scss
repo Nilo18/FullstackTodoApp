@@ -1,0 +1,46 @@
+@import '../../../styles/mixins.scss';
+
+.tasks {
+    width: 700px;
+    min-height: 600px;
+    padding-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    gap: 20px;
+
+    .tasks__taskContainer {
+        @include flexContainer;
+        width: 700px;
+        flex-direction: row-reverse;
+        justify-content: space-between;
+        gap: 10px;
+        font-weight: bold;
+        font-size: 24px;
+        transition: 0.15s ease-in-out;
+        padding-left: 5px;
+
+        button {
+            @include basicButton;
+            background-color: rgb(121, 0, 0);
+            color: white;
+        }
+
+        .tasks__taskContainer__checkBox {
+            @include flexContainer;
+            flex-direction: row-reverse;
+            gap: 10px;
+
+            input {
+                width: 20px;
+                height: 20px;
+            }
+        }
+    }
+
+    .tasks__taskContainer:hover {
+        border: 1px solid;
+        cursor: pointer;
+    }
+}

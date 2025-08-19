@@ -1,0 +1,18 @@
+<div class="cont">
+    <div class="tasks" *ngIf="tasks.length > 0; else showMsg">
+            <div *ngFor="let task of tasks">
+                <div class="tasks__taskContainer">
+                    <button (click)="deleteATask(task._id)">Delete</button>
+                    <div class="tasks__taskContainer__checkBox">
+                        <p>{{task.taskName}}</p>
+                        <input type="checkbox" [(ngModel)]="task.completed" [disabled]="!shouldUpdate" (click)="updateATask(task._id, task)">
+                    </div>
+                </div>
+            </div>
+    </div>
+        <ng-template #showMsg>
+            <div class="tasks">
+                <p *ngIf="tasks.length === 0" >There are no active tasks.</p>
+            </div>
+        </ng-template>
+</div>

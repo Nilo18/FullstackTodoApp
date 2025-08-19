@@ -1,0 +1,21 @@
+<div class="cont">
+    <!-- Pass form.value to onSubmit because it contains the finalized form of FormBuilder's properties (username, email, password) -->
+    <form class="signup" [formGroup]="form" (ngSubmit)="onSubmit(form.value)">
+        <div class="signup__Username">
+            <label for="username">Username</label>
+            <input type="text" formControlName="username">
+            <p class="errMsg smallerErrMsg"></p>
+        </div>
+        <div class="signup__Email">
+            <label for="email">Email</label>
+            <input type="text" formControlName="email">
+            <p class="errMsg smallerErrMsg"></p>
+        </div>
+        <div class="signup__Password">
+            <label for="password">Password</label>
+            <input type="password" formControlName="password">
+            <p class="errMsg smallerErrMsg"></p>
+        </div>
+        <button type="submit" [disabled]="form.invalid">Sign Up</button>
+    </form>
+</div>

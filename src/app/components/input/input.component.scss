@@ -1,0 +1,41 @@
+@import '../../../styles/mixins.scss';
+
+.input {
+    @include flexContainer;
+    flex-direction: column;
+    gap: 20px;
+    height: 80px;
+    margin-bottom: 20px;
+
+    .inputHolder {
+        margin-top: 20px;
+        @include flexContainer;
+        width: 1200px;
+        height: 40px;
+
+        input {
+            width: 600px;
+            height: 40px;
+            padding: 10px;
+            border-top-left-radius: 8px;
+            border-bottom-left-radius: 8px;
+            border: 1px solid rgb(125, 124, 124);
+        }
+
+        button {
+            @include basicButton;
+            background-color: rgb(40, 127, 0);
+            color: white;
+        }
+
+        button:hover {
+            background-color: rgb(36, 113, 0);
+        }
+    }
+
+    .addMsg {
+        @include msg;
+    }
+
+}
+

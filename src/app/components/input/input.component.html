@@ -1,0 +1,14 @@
+<div class="cont">
+    <div class="input">
+        <div class="inputHolder">
+            <input type="text" placeholder="Enter a task" [(ngModel)]="task.taskName">
+            <button (click)="addATask(task)">Add</button>
+        </div>
+        <p *ngIf="!shouldShowAddingMsg; else showAdding" class="errMsg">{{taskIsValid? '' : 'Please enter a valid task.'}}</p>
+        <ng-template #showAdding>
+            <p class="addMsg">Adding...</p>
+        </ng-template>
+           
+    </div>
+</div>
+
