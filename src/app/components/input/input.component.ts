@@ -1,5 +1,7 @@
-import { Component, EventEmitter, Output } from '@angular/core';
-import { TasksService } from '../../services/tasks.service';
+import { Component } from '@angular/core';
+import { TasksService, Task } from '../../services/tasks.service';
+import { AuthService, DecodedToken } from '../../services/auth.service';
+import { jwtDecode } from 'jwt-decode';
 
 @Component({
   selector: 'app-input',
@@ -7,19 +9,41 @@ import { TasksService } from '../../services/tasks.service';
   styleUrl: './input.component.scss'
 })
 export class InputComponent {
-  task: {taskName: string, completed: boolean} = {
-    taskName: '',
-    completed: false
-  }
+
+  constructor(private tasksService: TasksService, private authService: AuthService) {}
   
   taskIsValid: boolean = true
   shouldShowAddingMsg: boolean = false
+  token!: DecodedToken
+  task: Task = {
+    userId: 0,
+    taskName: '',
+    completed: false
+  }
 
-  constructor(private tasksService: TasksService) {}
+  ngOnInit() {
+    this.authService.accessToken$.subscribe(accessToken => {
+      if (accessToken) {
+        this.token = jwtDecode<DecodedToken>(accessToken)
+        this.task = {
+          userId: this.token.userId,
+          taskName: '',
+          completed: false
+        }
+      }
+    })
+  }
 
-  async addATask(taskToAdd: {taskName: string, completed: boolean}) { 
+  async addATask(taskToAdd: Task) { 
     if (this.task.taskName.trim() !== '') {
-      await this.tasksService.addTask(taskToAdd)
+      this.authService.accessToken$.subscribe(async (accessToken) => {
+        try {
+          await this.tasksService.addTask(taskToAdd, accessToken)
+        } catch(err) {
+          console.log("Couldn't add task", err)
+          throw new Error("Couldn't add task")
+        }})
+      
       this.task.taskName = ''
       this.shouldShowAddingMsg = true
       setTimeout(() => {

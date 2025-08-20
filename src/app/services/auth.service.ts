@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { firstValueFrom } from 'rxjs';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { BehaviorSubject, firstValueFrom } from 'rxjs';
 import { jwtDecode } from 'jwt-decode';
 
 // interfaces are different from struct because they don't have any real value or memory during runtime (execution)
@@ -11,7 +11,12 @@ export interface SignUpCredentials {
   password: string
 }
 
-interface DecodedToken {
+export interface LoginCredentials {
+  username: string,
+  password: string
+}
+
+export interface DecodedToken {
   userId: number,
   username: string,
   exp: number
@@ -28,11 +33,16 @@ export class AuthService {
   // | operator means that the variable can be either a string or null
   // We use string | null here instead of private accessToken!: string, because the variable could be used before it is defined
   // And we're avoiding this and increasing the safety
-  private accessToken: string | null = null
+  // private accessToken: string | null = null
+  private accessTokenSubject = new BehaviorSubject<string | null>(null)
+  // If we don't mark the subject asObservable() other components will be able to call next() and emit their own tokens
+  accessToken$ = this.accessTokenSubject.asObservable() // $ sign is just a naming convention to mark the variable is an obseravble
+  private isAuthenticating: boolean = false
   private decodedToken!: DecodedToken
   private signUpURL = 'https://fullstacktodoapp-back-2-0.onrender.com/signup' 
   private loginURL = 'https://fullstacktodoapp-back-2-0.onrender.com/login'
   private refreshURL = 'https://fullstacktodoapp-back-2-0.onrender.com/refresh'
+  private logoutURL = 'https://fullstacktodoapp-back-2-0.onrender.com/logout'
 
   constructor(private http: HttpClient) { }
 
@@ -50,48 +60,87 @@ export class AuthService {
       // There's also lastValuefrom to read the last value
       // Added {widthCredentials: true} to include cookies and store the refresh token 
       const response = await firstValueFrom(this.http.post<{accessToken: string}>(this.signUpURL, credentials, {withCredentials: true}))
-      this.accessToken = response.accessToken
-      console.log('Access token: ', this.accessToken)
+      this.accessTokenSubject.next(response.accessToken)
+      this.isAuthenticating = true
+      console.log('Access token: ', this.accessTokenSubject.value)
     } catch(err) { 
       console.log(err)
-      throw err // Exit the function incase an error occurs 
+      throw new Error('Sign up failed.') // Exit the function incase an error occurs 
+    }
+  }
+
+  async loginUser(credentials: LoginCredentials) {
+    try {
+      const response = await firstValueFrom(this.http.post<{accessToken: string}>(this.loginURL, credentials, {withCredentials: true}))
+      this.accessTokenSubject.next(response.accessToken)
+      this.isAuthenticating = true
+      console.log('Login successful, the access token is: ', this.accessTokenSubject.value)
+      const refreshToken = document.cookie.includes('refreshToken')
+      console.log('The refresh token after login is: ', refreshToken)
+    } catch(err) {
+      console.log(err)
+      throw new Error('Login failed.')
+    }
+  }
+
+  async logoutUser() {
+    try {
+      const res = await firstValueFrom(this.http.delete(this.logoutURL, {withCredentials: true}))
+      console.log('Deleted refresh token: ', res)
+    } catch(err) {
+      console.log(err)
+      throw new Error("Logout failed.")
     }
   }
 
   // !! turns a value into boolean, if string is valid true will be returned because all strings except for '' are truthy
   // If the accessToken is null false will be returned because null is falsy
   hasToken(): boolean {
-    return !!this.accessToken
+    return !!this.accessTokenSubject.value
   }
   
   tokenIsExpired(): boolean {
     // If the accessToken is null, that doesn't mean that it is expired, just missing, so just ignore it
-    if (!this.accessToken) { 
+    if (!this.accessTokenSubject.value) { 
       return false;
     }
     // Decode the token to check if it expired or not
-    this.decodedToken = jwtDecode(this.accessToken) // Assign the local decodedToken so we can access the username later
+    // null assertion operator '!' is used to denote that the value can't be null at this time
+    this.decodedToken = jwtDecode(this.accessTokenSubject.value!) // Assign the local decodedToken so we can access the username later
     return this.decodedToken.exp < Date.now() / 1000 // Current time, converting from seconds
   }
 
   async refreshAccessToken() {
-    // Reverse the condition from hasToken(), if true is returned (token exists) then ! will negate it and null will be returned
-    // i.e token won't be refreshed 
-    if (!this.hasToken()) { 
-      return null
+    if (this.isAuthenticating) {
+      return this.accessTokenSubject.value // return if authentication is happening
     }
-    if (this.tokenIsExpired()) {
-      const res: RefreshedAccessToken = await firstValueFrom(
-        this.http.post<RefreshedAccessToken>(this.refreshURL, {username: this.decodedToken.username})
-      )
-      this.accessToken = res.accessToken
-      console.log('Access token: ', this.accessToken)
-      return this.accessToken
+
+    console.log('Checking the condition...')
+    // Check if the access token is missing or has expired
+    if (!this.accessTokenSubject.value || this.tokenIsExpired()) {
+      this.isAuthenticating = true // Set the flag to true to prevent multiple refresh requests
+      console.log('Access token inside refreshAccessToken is: ', this.accessTokenSubject.value)
+      try {
+        const res: RefreshedAccessToken = await firstValueFrom(
+          // send cookies as well
+          this.http.post<RefreshedAccessToken>(this.refreshURL, {}, {withCredentials: true}) 
+        )
+        console.log(res)
+        this.accessTokenSubject.next(res.accessToken)
+        console.log('Access token: ', this.accessTokenSubject.value)
+        return this.accessTokenSubject.value
+      } catch(err) {
+        console.log('Error while trying to get an access token on refresh: ', err)
+        throw new Error('Failed to get a new access token')
+      } finally {
+        this.isAuthenticating = false // Release the lock so future login/sign ups can happen
+      }
     }
-    return this.accessToken // If the token isn't invalid or hasn't expired just return it
+    return this.accessTokenSubject.value // If the token isn't invalid or hasn't expired just return it
   }
   
   getAccessToken() {
-    return this.accessToken  
+    // Using value too much breaks the reactivep attern so .value method should be used sparingly
+    return this.accessTokenSubject.value  
   }
 }

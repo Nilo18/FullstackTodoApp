@@ -2,10 +2,20 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject } from 'rxjs';
 import { HttpHeaders } from '@angular/common/http';
+import { DecodedToken } from './auth.service';
+
+// interfaces mus always be above decorators
+export interface Task {
+  userId: number,
+  taskName: string, 
+  completed: boolean
+}
 
 @Injectable({
   providedIn: 'root'
 })
+
+
 export class TasksService {
 
   constructor(private http: HttpClient) { }
@@ -13,12 +23,19 @@ export class TasksService {
   // BehaviorSubject is used to keep the latest value of the observable and emit to subscribers immediately
   private tasksSubject = new BehaviorSubject<any[]>([]) 
   tasks$ = this.tasksSubject.asObservable() // asObservable() exposes the BehaviorSubject as the regular observable
-  async getAllTasks(accessToken: any) {
-    try {
-        const headers = new HttpHeaders({
-          Authorization: `Bearer ${accessToken}`
-        })
 
+  createHeader(accessToken: DecodedToken | string | null) {
+    return new HttpHeaders({
+      Authorization: `Bearer ${accessToken}`
+    })
+  }
+
+  async getAllTasks(accessToken: string | null) {
+    try {
+      console.log(accessToken)
+      const headers = this.createHeader(accessToken)
+      // The backend expects the access token to be sent as a header
+      // It is build that way to ensure that no one can make requests without having an access token
       const tasks = await this.http.get<any>(this.baseURL, {headers, withCredentials: true}).toPromise()
       this.tasksSubject.next(tasks) // next() changes the value of the subject
     } catch(err) {
@@ -28,12 +45,20 @@ export class TasksService {
 
   }
 
-  async addTask(task: {taskName: string, completed: boolean}) {
-    console.log("Adding task...:", task)
-    const newTask = await this.http.post(`${this.baseURL}`, task).toPromise() // .toPromise() converts the observable into a promise so we can await it
-    const current = this.tasksSubject.getValue() // get the current value
-    this.tasksSubject.next([...current, newTask])
-    return newTask;
+  // ******* Access token will be required in these methods as well ********
+  async addTask(task: Task, accessToken: DecodedToken | string | null) {
+    try {
+      console.log("Adding task...:", task)
+      const headers = this.createHeader(accessToken)
+      const newTask = await this.http.post(this.baseURL, task, {headers, withCredentials: true}).toPromise() // .toPromise() converts the observable into a promise so we can await it
+      const current = this.tasksSubject.getValue() // get the current value
+      this.tasksSubject.next([...current, newTask]) // Pass the value to the BehaviorSubject observer
+      return newTask;
+    } catch(err) {
+      console.log(err)
+      throw new Error("Couldn't add task")
+    }
+
   }
 
   async updateTask(id: string, updatedFields: any) {

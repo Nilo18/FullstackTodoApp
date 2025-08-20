@@ -13,6 +13,7 @@ export class AppComponent {
 
   async ngOnInit() {
     // Always check if new access token is required
-    await this.authService.refreshAccessToken() 
+    console.log('Awaiting new access token...')
+    // await this.authService.refreshAccessToken() 
   }
 }
