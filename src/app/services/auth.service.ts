@@ -60,7 +60,6 @@ export class AuthService {
     // Operators can change the received data like call filter(), map(), etc.
     // Or they can be used for side effects, i.e things you want to do without changing the received data
     try {
-      console.log('Loading...')
       // <> syntax tells typescript what type of data the observable is going to receive, it's called a type parameter
       // firstValueFrom waits for the first value emitted by the observable
       // There's also lastValuefrom to read the last value
@@ -69,7 +68,6 @@ export class AuthService {
       localStorage.setItem('accessToken', JSON.stringify(response.accessToken))
       // this.accessTokenSubject.next(response.accessToken)
       this.isAuthenticating = true
-      console.log('Access token: ', this.accessToken)
     } catch(err) { 
       console.log(err)
       throw new Error('Sign up failed.') // Exit the function incase an error occurs 
@@ -81,9 +79,7 @@ export class AuthService {
       const response = await firstValueFrom(this.http.post<{accessToken: string}>(this.loginURL, credentials, {withCredentials: true}))
       localStorage.setItem('accessToken', JSON.stringify(response.accessToken))
       this.isAuthenticating = true
-      console.log('Login successful, the access token is: ', this.accessToken)
       const refreshToken = document.cookie.includes('refreshToken')
-      console.log('The refresh token after login is: ', refreshToken)
     } catch(err) {
       console.log(err)
       throw new Error('Login failed.')
@@ -94,7 +90,6 @@ export class AuthService {
     try {
       const res = await firstValueFrom(this.http.delete(this.logoutURL, {withCredentials: true}))
       localStorage.removeItem('accessToken')
-      console.log('Deleted refresh token: ', res)
     } catch(err) {
       console.log(err)
       throw new Error("Logout failed.")
@@ -123,20 +118,16 @@ export class AuthService {
       return this.accessToken // return if authentication is happening
     }
 
-    console.log('Checking the condition...')
     // Check if the access token is missing or has expired
     if (!this.accessToken || this.tokenIsExpired()) {
       this.isAuthenticating = true // Set the flag to true to prevent multiple refresh requests
-      console.log('Access token inside refreshAccessToken is: ', this.accessToken)
       try {
         const res: RefreshedAccessToken = await firstValueFrom(
           // send cookies as well
           this.http.post<RefreshedAccessToken>(this.refreshURL, {}, {withCredentials: true}) 
         )
-        console.log(res)
         // this.accessTokenSubject.next(res.accessToken)
         localStorage.setItem('accessToken', JSON.stringify(res.accessToken))
-        console.log('Access token: ', this.accessToken)
         return this.accessToken
       } catch(err) {
         console.log('Error while trying to get an access token on refresh: ', err)

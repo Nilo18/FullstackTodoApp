@@ -27,8 +27,6 @@ export class SignupComponent {
 
   async onSubmit(credentials: SignUpCredentials) {
     this.signingUp = true;
-    console.log('Loading...')
-    console.log(this.form.value) // FormBuilder's .value property is the finalized version of all of it's fields
     await this.authService.signUpUser(credentials)
     this.router.navigate(['/home'])
   }

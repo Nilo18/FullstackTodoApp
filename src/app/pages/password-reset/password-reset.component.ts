@@ -24,8 +24,6 @@ export class PasswordResetComponent {
 
   async onSubmit(credentials: LoginCredentials) {
     try {
-      console.log(credentials)
-      console.log(this.resetForm.value)
       this.reqWasSent = true; 
       await this.authService.resetPassword(credentials)
       this.router.navigate(['/home']) 

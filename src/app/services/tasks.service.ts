@@ -33,7 +33,6 @@ export class TasksService {
 
   async getAllTasks(accessToken: string | null) {
     try {
-      console.log(accessToken)
       const headers = this.createHeader(accessToken)
       // The backend expects the access token to be sent as a header
       // It is build that way to ensure that no one can make requests without having an access token
@@ -49,9 +48,7 @@ export class TasksService {
   // ******* Access token will be required in these methods as well ********
   async addTask(task: Task, accessToken: string | null) {
     try {
-      console.log("Adding task...:", task)
       const headers = this.createHeader(accessToken)
-      console.log('The updated headers are: ', headers)
       const newTask = await this.http.post(this.baseURL, task, {headers, withCredentials: true}).toPromise() // .toPromise() converts the observable into a promise so we can await it
       const current = this.tasksSubject.getValue() // get the current value
       this.tasksSubject.next([...current, newTask]) // Pass the value to the BehaviorSubject observer
@@ -67,9 +64,7 @@ export class TasksService {
     try {
       // updatedTask is returned from backend
       const headers = this.createHeader(accessToken)
-      console.log('The updated headers are: ', headers)
       const updatedTask = await firstValueFrom(this.http.put(this.baseURL, {id, ...updatedFields}, {headers, withCredentials: true}))
-      console.log('The updated task is: ', updatedTask)
       const current = this.tasksSubject.getValue()
       // If the id of an object in the tasks array matches the given id, change it to the updated task because that was the changed task
       // Else keep it the same

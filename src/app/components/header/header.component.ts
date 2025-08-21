@@ -17,7 +17,6 @@ export class HeaderComponent {
   }
 
   async logout() {
-    console.log('Logging out...')
     await this.authService.logoutUser()
     this.navigateAndReload()
   }

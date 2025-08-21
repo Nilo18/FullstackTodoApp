@@ -27,8 +27,6 @@ export class LoginComponent {
     this.loggingIn = true;
 
     try {
-      console.log(this.loginForm.value)
-      console.log('Logging in...')
       await this.authService.loginUser(credentials)
       this.loggingIn = false;
       // navigate() takes an array for flexibility, this way it can determine which part of the URL is static and which one is dynamic
