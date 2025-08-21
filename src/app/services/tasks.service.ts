@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject } from 'rxjs';
 import { HttpHeaders } from '@angular/common/http';
 import { DecodedToken } from './auth.service';
+import { firstValueFrom } from 'rxjs';
 
 // interfaces mus always be above decorators
 export interface Task {
@@ -24,7 +25,7 @@ export class TasksService {
   private tasksSubject = new BehaviorSubject<any[]>([]) 
   tasks$ = this.tasksSubject.asObservable() // asObservable() exposes the BehaviorSubject as the regular observable
 
-  createHeader(accessToken: DecodedToken | string | null) {
+  createHeader(accessToken: string | null) {
     return new HttpHeaders({
       Authorization: `Bearer ${accessToken}`
     })
@@ -46,10 +47,11 @@ export class TasksService {
   }
 
   // ******* Access token will be required in these methods as well ********
-  async addTask(task: Task, accessToken: DecodedToken | string | null) {
+  async addTask(task: Task, accessToken: string | null) {
     try {
       console.log("Adding task...:", task)
       const headers = this.createHeader(accessToken)
+      console.log('The updated headers are: ', headers)
       const newTask = await this.http.post(this.baseURL, task, {headers, withCredentials: true}).toPromise() // .toPromise() converts the observable into a promise so we can await it
       const current = this.tasksSubject.getValue() // get the current value
       this.tasksSubject.next([...current, newTask]) // Pass the value to the BehaviorSubject observer
@@ -61,23 +63,39 @@ export class TasksService {
 
   }
 
-  async updateTask(id: string, updatedFields: any) {
-    // updatedTask is returned from backend
-    const updatedTask = await this.http.request('PUT', this.baseURL, {body: {id, ...updatedFields}}).toPromise()
-    const current = this.tasksSubject.getValue()
-    // If the id of an object in the tasks array matches the given id, change it to the updated task because that was the changed task
-    // Else keep it the same
-    const newTasks = current.map(t => t._id === id? updatedTask : t) 
-    this.tasksSubject.next(newTasks)
-    return updatedTask
+  async updateTask(id: string, updatedFields: any, accessToken: string | null) {
+    try {
+      // updatedTask is returned from backend
+      const headers = this.createHeader(accessToken)
+      console.log('The updated headers are: ', headers)
+      const updatedTask = await firstValueFrom(this.http.put(this.baseURL, {id, ...updatedFields}, {headers, withCredentials: true}))
+      console.log('The updated task is: ', updatedTask)
+      const current = this.tasksSubject.getValue()
+      // If the id of an object in the tasks array matches the given id, change it to the updated task because that was the changed task
+      // Else keep it the same
+      const newTasks = current.map(t => t._id === id? updatedTask : t) 
+      this.tasksSubject.next(newTasks)
+      return updatedTask
+    } catch (err) {
+      console.log("Couldn't update the task. ", err)
+      throw new Error("Couldn't update the task. ")
+    }
+
   }
 
-  async deleteTask(id: string) {
-    await this.http.request('DELETE', this.baseURL, {body: {id}}).toPromise() // We use request() here because delete takes different parameters
-    const current = this.tasksSubject.getValue()
-    // Filter out all the tasks which don't match the given id, this way only the deleted task will be left out
-    const newTasks = current.filter(t => t._id !== id)
-    this.tasksSubject.next(newTasks)
-    return id // id of the task which was deleted
+  async deleteTask(id: string, accessToken: string | null) {
+    try {
+      const headers = this.createHeader(accessToken)
+      await firstValueFrom(this.http.delete(this.baseURL, {headers, body: {id}, withCredentials: true}))
+      const current = this.tasksSubject.getValue()
+      // Filter out all the tasks which don't match the given id, this way only the deleted task will be left out
+      const newTasks = current.filter(t => t._id !== id)
+      this.tasksSubject.next(newTasks)
+      return id // id of the task which was deleted
+    } catch (err) {
+      console.log("Couldn't delete task.", err)
+      throw new Error("Couldn't delete task.")
+    }
+
   }
 }

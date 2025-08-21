@@ -23,6 +23,7 @@ export class InputComponent {
 
   ngOnInit() {
     this.authService.accessToken$.subscribe(accessToken => {
+      // Wrapped in an if statement to suppress typescript error about null value
       if (accessToken) {
         this.token = jwtDecode<DecodedToken>(accessToken)
         this.task = {

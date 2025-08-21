@@ -40,7 +40,7 @@ export class TasksComponent {
   }
 
   async deleteATask(id: string) {
-    await this.tasksService.deleteTask(id)
+    await this.tasksService.deleteTask(id, this.token)
   }
 
   toggleDisabled() {
@@ -51,7 +51,7 @@ export class TasksComponent {
     if (this.shouldUpdate) {
       updatedFields.completed = !updatedFields.completed
       this.toggleDisabled() // Disable the checkbox
-      await this.tasksService.updateTask(id, updatedFields)
+      await this.tasksService.updateTask(id, updatedFields, this.token)
       setTimeout(() => {
         this.toggleDisabled() // Enable it again after 3 secs
       }, 3000)

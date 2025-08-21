@@ -43,6 +43,7 @@ export class AuthService {
   private loginURL = 'https://fullstacktodoapp-back-2-0.onrender.com/login'
   private refreshURL = 'https://fullstacktodoapp-back-2-0.onrender.com/refresh'
   private logoutURL = 'https://fullstacktodoapp-back-2-0.onrender.com/logout'
+  private passwordResetURL = 'https://fullstacktodoapp-back-2-0.onrender.com/password-reset'
 
   constructor(private http: HttpClient) { }
 
@@ -139,6 +140,17 @@ export class AuthService {
     return this.accessTokenSubject.value // If the token isn't invalid or hasn't expired just return it
   }
   
+  async resetPassword(credentials: LoginCredentials) {
+    try {
+      const res = await firstValueFrom(this.http.put<{accessToken: string}>(this.passwordResetURL, credentials, {withCredentials: true}))
+      this.accessTokenSubject.next(res.accessToken)
+      this.isAuthenticating = true
+    } catch (err) {
+      console.log(err)
+      throw new Error("Couldn't reset password")
+    }
+  }
+
   getAccessToken() {
     // Using value too much breaks the reactivep attern so .value method should be used sparingly
     return this.accessTokenSubject.value  

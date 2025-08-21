@@ -30,3 +30,13 @@ app-root {
     height: 40px;
     color: red;
 }
+
+// Small paragraph which will display messages like 'Forgot Password?'
+.routerP {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.routerP:hover {
+    text-decoration: none;
+}
