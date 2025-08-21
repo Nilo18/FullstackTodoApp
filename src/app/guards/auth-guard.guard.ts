@@ -4,9 +4,10 @@ import { AuthService } from '../services/auth.service';
 
 export const authGuardGuard: CanActivateFn = (route: ActivatedRouteSnapshot, state: RouterStateSnapshot) => {
   const router: Router = inject(Router)
-  const authService = inject(AuthService)
+  const storedToken = localStorage.getItem('accessToken')
+  const accessToken = storedToken ? JSON.parse(storedToken) : null
 
-  if (authService.hasToken()) {
+  if (accessToken) {
     return true
   } else {
     router.navigate(['/signup'])

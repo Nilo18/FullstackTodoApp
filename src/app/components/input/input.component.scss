@@ -18,6 +18,8 @@
             width: 600px;
             height: 40px;
             padding: 10px;
+            font-size: 16px;
+            font-weight: bold;
             border-top-left-radius: 8px;
             border-bottom-left-radius: 8px;
             border: 1px solid rgb(125, 124, 124);
@@ -40,3 +42,53 @@
 
 }
 
+@media (min-width: 900px) and (max-width: 1198.98px) {
+    .input {
+        .inputHolder {
+            width: 880px;
+        }
+    }
+}
+
+@media (min-width: 600px) and (max-width: 898.98px) {
+    .input {
+        .inputHolder {
+            width: 570px;
+
+            input {
+                width: 470px;
+            }
+        }
+    }
+}
+
+// For larger phones
+@media (min-width: 400px) and (max-width: 598.98px) {
+    .input {
+        .inputHolder {
+            width: 380px;
+
+            input {
+                width: 100%;
+            }
+        }
+    }
+}
+
+// For smaller phones
+@media (min-width: 280px) and (max-width: 398.98px) {
+    .input {
+        .inputHolder {
+            width: 280px;
+
+            input {
+                width: 200px;
+                font-size: 12px;
+            }
+
+            button {
+                width: 80px;
+            }
+        }
+    }
+}

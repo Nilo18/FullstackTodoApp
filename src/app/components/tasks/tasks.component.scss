@@ -44,3 +44,55 @@
         cursor: pointer;
     }
 }
+
+@media (min-width: 600px) and (max-width: 898.98px) {
+    .tasks {
+        width: 570px;
+
+        .tasks__taskContainer {
+            width: 570px;
+
+            P {
+                font-size: 18px;
+            }
+        }
+    }
+}
+
+// For larger phones
+@media (min-width: 400px) and (max-width: 598.98px) {
+    .tasks {
+        width: 380px;
+
+        .tasks__taskContainer {
+            width: 380px;
+
+            P {
+                width: 250px;
+                font-size: 16px;
+            }
+        }
+    }
+}
+
+// For smaller phones
+@media (min-width: 280px) and (max-width: 398.98px) {
+    .tasks {
+        width: 280px;
+
+        .tasks__taskContainer {
+            width: 280px;
+
+            P {
+                width: 160px;
+                font-size: 12px;
+            }
+
+            button {
+                width: 80px;
+                font-size: 12px;
+                @include flexContainer
+            }
+        }
+    }
+}

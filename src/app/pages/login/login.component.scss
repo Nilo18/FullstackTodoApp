@@ -50,3 +50,71 @@
         background-color: rgb(35, 73, 213);
     }
 }
+
+/* -------------------- Responsive Breakpoints -------------------- */
+
+/* Tablets */
+@media (min-width: 600px) and (max-width: 898.98px) {
+    .login {
+        width: 450px;
+        padding: 25px;
+
+        input {
+            font-size: 15px;
+        }
+
+        button {
+            font-size: 15px;
+        }
+    }
+}
+
+/* Larger phones */
+@media (min-width: 400px) and (max-width: 598.98px) {
+    .login {
+        width: 350px;
+        padding: 20px;
+
+        input {
+            font-size: 14px;
+            height: 35px;
+        }
+
+        button {
+            font-size: 14px;
+            height: 40px;
+        }
+
+        .routerP {
+            font-size: 13px;
+        }
+    }
+}
+
+/* Smaller phones */
+@media (min-width: 280px) and (max-width: 398.98px) {
+    .login {
+        width: 260px;
+        height: 320px;
+        padding: 15px;
+        gap: 15px;
+
+        label {
+            font-size: 13px;
+        }
+
+        input {
+            font-size: 13px;
+            height: 32px;
+        }
+
+        button {
+            font-size: 13px;
+            height: 38px;
+        }
+
+        .routerP {
+            font-size: 12px;
+        }
+    }
+}

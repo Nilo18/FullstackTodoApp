@@ -4,17 +4,16 @@ import { AuthService } from '../services/auth.service';
 import { Router } from '@angular/router';
 
 export const signupBlockerGuard: CanActivateFn = (route, state) => {
-  const authService: AuthService = inject(AuthService)
   const router: Router = inject(Router)
 
-  const hasToken = authService.hasToken();
-  console.log('signupBlockerGuard: hasToken =', hasToken, 'Current URL:', state.url);
+  const storedToken = localStorage.getItem('accessToken')
+  const accessToken = storedToken ? JSON.parse(storedToken) : null
 
-  if (hasToken) {
-    console.log('Token found, redirecting to /home');
-    return router.createUrlTree(['/home']);
+  // Redirect and block the access to authorization if the user already has a token
+  if (accessToken) {
+    router.navigate(['/home'])
+    return false
   } else {
-    console.log('No token, allowing access to', state.url);
     return true;
   }
     

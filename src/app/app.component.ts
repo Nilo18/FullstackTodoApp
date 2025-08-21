@@ -8,12 +8,5 @@ import { AuthService } from './services/auth.service';
 })
 export class AppComponent {
   title = 'FullstackTodoApp-Front';
-
-  constructor(private authService: AuthService) {}
-
-  async ngOnInit() {
-    // Always check if new access token is required
-    console.log('Awaiting new access token...')
-    // await this.authService.refreshAccessToken() 
-  }
+  token!: string | null
 }

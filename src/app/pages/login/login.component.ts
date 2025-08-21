@@ -11,6 +11,8 @@ import { Router } from '@angular/router';
 export class LoginComponent {
   loginForm!: FormGroup
   loggingIn: boolean = false
+  gotError: boolean = false 
+  errMsg: string = ''
 
   constructor(private fb: FormBuilder, private authService: AuthService, private router: Router) {}
 
@@ -23,11 +25,20 @@ export class LoginComponent {
 
   async onSubmit(credentials: LoginCredentials) {
     this.loggingIn = true;
-    console.log(this.loginForm.value)
-    console.log('Logging in...')
-    await this.authService.loginUser(credentials)
-    // navigate() takes an array for flexibility, this way it can determine which part of the URL is static and which one is dynamic
-    this.router.navigate(['/home']) 
+
+    try {
+      console.log(this.loginForm.value)
+      console.log('Logging in...')
+      await this.authService.loginUser(credentials)
+      this.loggingIn = false;
+      // navigate() takes an array for flexibility, this way it can determine which part of the URL is static and which one is dynamic
+      this.router.navigate(['/home']) 
+    } catch(err: any) {
+      this.gotError = true;
+      this.loggingIn = false  
+      this.errMsg = err.error
+    }
+
   }
 
   get username() {

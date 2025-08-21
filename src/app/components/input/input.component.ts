@@ -22,7 +22,8 @@ export class InputComponent {
   }
 
   ngOnInit() {
-    this.authService.accessToken$.subscribe(accessToken => {
+      const storedToken = localStorage.getItem('accessToken')
+      const accessToken = storedToken? JSON.parse(storedToken) : null
       // Wrapped in an if statement to suppress typescript error about null value
       if (accessToken) {
         this.token = jwtDecode<DecodedToken>(accessToken)
@@ -32,18 +33,20 @@ export class InputComponent {
           completed: false
         }
       }
-    })
   }
 
   async addATask(taskToAdd: Task) { 
     if (this.task.taskName.trim() !== '') {
-      this.authService.accessToken$.subscribe(async (accessToken) => {
+      const storedToken = localStorage.getItem('accessToken')
+      const accessToken = storedToken? JSON.parse(storedToken) : null
+      // this.authService.accessToken$.subscribe(async (accessToken) => {
         try {
           await this.tasksService.addTask(taskToAdd, accessToken)
         } catch(err) {
           console.log("Couldn't add task", err)
           throw new Error("Couldn't add task")
-        }})
+        }
+        // }})
       
       this.task.taskName = ''
       this.shouldShowAddingMsg = true

@@ -23,10 +23,13 @@ export class TasksComponent {
       this.tasks = tasks
     }) 
     // console.log()
-    this.authService.accessToken$.subscribe(accessToken => {
-      this.token = accessToken
-    })
-
+    const storedToken = localStorage.getItem('accessToken')
+    const accessToken = storedToken? JSON.parse(storedToken) : null
+    this.token = accessToken
+    // this.authService.accessToken$.subscribe(accessToken => {
+    //   this.token = accessToken
+    // })
+    
     // If the token is null then refreshAccessToken() will be called and a new token will be fetched from the backend 
     if (!this.token || this.authService.tokenIsExpired()) {
       try {
@@ -36,7 +39,7 @@ export class TasksComponent {
         throw new Error('Failed to refresh')
       }
     }
-    this.tasksService.getAllTasks(this.token)
+    await this.tasksService.getAllTasks(this.token)
   }
 
   async deleteATask(id: string) {

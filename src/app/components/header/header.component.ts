@@ -10,9 +10,15 @@ import { Router } from '@angular/router';
 export class HeaderComponent {
   constructor(private authService: AuthService, private router: Router) {}
 
+  navigateAndReload() {
+      this.router.navigate(['/signup']).then(() => {
+        window.location.href = '/signup' // Refresh the page to clear the memory of token leftovers
+    });
+  }
+
   async logout() {
     console.log('Logging out...')
     await this.authService.logoutUser()
-    this.router.navigate(['/signup'])
+    this.navigateAndReload()
   }
 }

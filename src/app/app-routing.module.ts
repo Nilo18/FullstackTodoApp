@@ -11,10 +11,10 @@ import { PasswordResetComponent } from './pages/password-reset/password-reset.co
 const routes: Routes = [
   // redirectTo makes sure that if the user hits the base URL, they will be redirected to sign up page
   {path: '', redirectTo: 'signup', pathMatch: 'full'},
-  {path: 'signup', component: SignupComponent},
+  {path: 'signup', component: SignupComponent, canActivate: [signupBlockerGuard]},
   {path: 'home', component: HomepageComponent, canActivate: [authGuardGuard]},
-  {path: 'login', component: LoginComponent},
-  {path: 'password-reset', component: PasswordResetComponent}
+  {path: 'login', component: LoginComponent, canActivate: [signupBlockerGuard]},
+  {path: 'password-reset', component: PasswordResetComponent, canActivate: [signupBlockerGuard]}
 ];
 
 @NgModule({
