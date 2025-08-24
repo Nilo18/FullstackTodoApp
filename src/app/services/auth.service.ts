@@ -86,9 +86,8 @@ export class AuthService {
     }
   }
 
-  async logoutUser() {
+  logoutUser() {
     try {
-      const res = await firstValueFrom(this.http.delete(this.logoutURL, {withCredentials: true}))
       localStorage.removeItem('accessToken')
     } catch(err) {
       console.log(err)
@@ -101,44 +100,7 @@ export class AuthService {
   hasToken(): boolean {
     return !!this.accessToken
   }
-  
-  tokenIsExpired(): boolean {
-    // If the accessToken is null, that doesn't mean that it is expired, just missing, so just ignore it
-    if (!this.accessToken) { 
-      return false;
-    }
-    // Decode the token to check if it expired or not
-    // null assertion operator '!' is used to denote that the value can't be null at this time
-    this.decodedToken = jwtDecode(this.accessToken) // Assign the local decodedToken so we can access the username later
-    return this.decodedToken.exp < Date.now() / 1000 // Current time, converting from seconds
-  }
 
-  async refreshAccessToken() {
-    if (this.isAuthenticating) {
-      return this.accessToken // return if authentication is happening
-    }
-
-    // Check if the access token is missing or has expired
-    if (!this.accessToken || this.tokenIsExpired()) {
-      this.isAuthenticating = true // Set the flag to true to prevent multiple refresh requests
-      try {
-        const res: RefreshedAccessToken = await firstValueFrom(
-          // send cookies as well
-          this.http.post<RefreshedAccessToken>(this.refreshURL, {}, {withCredentials: true}) 
-        )
-        // this.accessTokenSubject.next(res.accessToken)
-        localStorage.setItem('accessToken', JSON.stringify(res.accessToken))
-        return this.accessToken
-      } catch(err) {
-        console.log('Error while trying to get an access token on refresh: ', err)
-        throw new Error('Failed to get a new access token')
-      } finally {
-        this.isAuthenticating = false // Release the lock so future login/sign ups can happen
-      }
-    }
-    return this.accessToken // If the token isn't invalid or hasn't expired just return it
-  }
-  
   async resetPassword(credentials: LoginCredentials) {
     try {
       const res = await firstValueFrom(this.http.put<{accessToken: string}>(this.passwordResetURL, credentials, {withCredentials: true}))

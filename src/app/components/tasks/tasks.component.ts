@@ -27,15 +27,6 @@ export class TasksComponent {
     const accessToken = storedToken? JSON.parse(storedToken) : null
     this.token = accessToken
     
-    // If the token is null then refreshAccessToken() will be called and a new token will be fetched from the backend 
-    if (!this.token || this.authService.tokenIsExpired()) {
-      try {
-        this.token = await this.authService.refreshAccessToken();
-      } catch(err) {
-        console.log(err)
-        throw new Error('Failed to refresh')
-      }
-    }
     await this.tasksService.getAllTasks(this.token)
   }
 
@@ -54,7 +45,7 @@ export class TasksComponent {
       await this.tasksService.updateTask(id, updatedFields, this.token)
       setTimeout(() => {
         this.toggleDisabled() // Enable it again after 3 secs
-      }, 3000)
+      }, 2000)
     } 
   }
 }
