@@ -19,10 +19,12 @@
         font-weight: bold;
         font-size: 24px;
         transition: 0.15s ease-in-out;
-        padding-left: 5px;
+        // padding-left: 5px;
+        padding: 5px;
 
         button {
             @include basicButton;
+            // width: auto;
             background-color: rgb(226, 1, 1);
             color: white;
         }
@@ -31,6 +33,12 @@
             @include flexContainer;
             flex-direction: row-reverse;
             gap: 10px;
+
+            p {
+                width: 560px;
+                white-space: normal; // Allows wrapping
+                overflow-wrap: break-word; // Breaks long words if they exceed the width
+            }
 
             input {
                 width: 20px;
@@ -52,8 +60,11 @@
         .tasks__taskContainer {
             width: 570px;
 
-            P {
-                font-size: 18px;
+            .tasks__taskContainer__checkBox {
+                P {
+                    font-size: 18px;
+                    width: 430px;
+                }
             }
         }
     }
@@ -67,9 +78,11 @@
         .tasks__taskContainer {
             width: 380px;
 
-            P {
-                width: 250px;
-                font-size: 16px;
+            .tasks__taskContainer__checkBox {
+                P {
+                    width: 240px;
+                    font-size: 16px;
+                }
             }
         }
     }
@@ -83,11 +96,13 @@
         .tasks__taskContainer {
             width: 280px;
 
-            P {
-                width: 160px;
-                font-size: 12px;
+        .tasks__taskContainer__checkBox {
+                P {
+                    width: 160px;
+                    font-size: 12px;
+                }
             }
-
+            
             button {
                 width: 80px;
                 font-size: 12px;
