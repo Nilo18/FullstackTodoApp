@@ -99,6 +99,7 @@ export class AuthService {
       const res = await firstValueFrom(this.http.get<{accessToken: string}>(`${this.emailVerificationURL}${token}`))
       console.log(res.accessToken)
       localStorage.setItem('accessToken', JSON.stringify(res.accessToken))
+      return res.accessToken
     } catch (err) {
       console.log('Error while trying to verify the email: ', err)
       throw new Error("Couldn't complete email verification.")
