@@ -16,14 +16,24 @@
             cursor: pointer;
         }
 
-        button {
-            @include basicButton;
-            background-color: rgb(0, 190, 130);
-            color: white;
-        }
+        .header__RightSection {
+            @include flexContainer;
+            gap: 10px;
 
-        button:hover {
-            background-color: rgb(0, 148, 101);
+            button {
+                @include basicButton;
+                background-color: rgb(0, 190, 130);
+                color: white;
+            }
+
+            button:hover {
+                background-color: rgb(0, 148, 101);
+            }
+
+            // Apply styling when the button is disabled
+            button:disabled {
+                background-color: gray;
+            }
         }
 }
 

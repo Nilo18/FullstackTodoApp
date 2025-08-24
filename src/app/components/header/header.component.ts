@@ -9,6 +9,7 @@ import { Router } from '@angular/router';
 })
 export class HeaderComponent {
   constructor(private authService: AuthService, private router: Router) {}
+  isLoggingOut: boolean = false;
 
   navigateAndReload() {
       this.router.navigate(['/signup']).then(() => {
@@ -17,6 +18,7 @@ export class HeaderComponent {
   }
 
   async logout() {
+    this.isLoggingOut = true
     await this.authService.logoutUser()
     this.navigateAndReload()
   }

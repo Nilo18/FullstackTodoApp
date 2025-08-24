@@ -1,6 +1,9 @@
 <div class="cont">
     <div class="header">
         <h1>TaskManager</h1>
-        <button (click)="logout()">Log Out</button>
+        <div class="header__RightSection">
+            <p *ngIf="isLoggingOut">Logging out...</p>
+            <button (click)="logout()" [disabled]="isLoggingOut">Log Out</button>
+        </div>
     </div>
 </div>
