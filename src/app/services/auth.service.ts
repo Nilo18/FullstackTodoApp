@@ -26,6 +26,13 @@ interface RefreshedAccessToken {
   accessToken: string
 }
 
+interface verificationToken {
+    userId: number,
+    username: string,
+    token: string,
+    expiry: Date,
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -45,6 +52,7 @@ export class AuthService {
   private refreshURL = 'https://fullstacktodoapp-back-2-0.onrender.com/refresh'
   private logoutURL = 'https://fullstacktodoapp-back-2-0.onrender.com/logout'
   private passwordResetURL = 'https://fullstacktodoapp-back-2-0.onrender.com/password-reset'
+  private emailVerificationURL = 'https://fullstacktodoapp-back-2-0.onrender.com/password-reset/'
 
   constructor(private http: HttpClient) { }
 
@@ -65,7 +73,7 @@ export class AuthService {
       // There's also lastValuefrom to read the last value
       // Added {widthCredentials: true} to include cookies and store the refresh token 
       const response = await firstValueFrom(this.http.post<{accessToken: string}>(this.signUpURL, credentials, {withCredentials: true}))
-      localStorage.setItem('accessToken', JSON.stringify(response.accessToken))
+      // localStorage.setItem('accessToken', JSON.stringify(response.accessToken))
       // this.accessTokenSubject.next(response.accessToken)
       this.isAuthenticating = true
     } catch(err) { 
@@ -83,6 +91,17 @@ export class AuthService {
     } catch(err) {
       console.log(err)
       throw new Error('Login failed.')
+    }
+  }
+
+  async verifyEmail(token: string) {
+    try {
+      const res = await firstValueFrom(this.http.get<{accessToken: string}>(`${this.emailVerificationURL}/${token}`))
+      console.log(res.accessToken)
+      localStorage.setItem('accessToken', JSON.stringify(res.accessToken))
+    } catch (err) {
+      console.log('Error while trying to verify the email: ', err)
+      throw new Error("Couldn't complete email verification.")
     }
   }
 

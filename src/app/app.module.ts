@@ -14,6 +14,7 @@ import { LoginComponent } from './pages/login/login.component';
 import { HeaderComponent } from './components/header/header.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { PasswordResetComponent } from './pages/password-reset/password-reset.component';
+import { EmailVerificationComponent } from './pages/email-verification/email-verification.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +25,8 @@ import { PasswordResetComponent } from './pages/password-reset/password-reset.co
     SignupComponent,
     LoginComponent,
     HeaderComponent,
-    PasswordResetComponent
+    PasswordResetComponent,
+    EmailVerificationComponent
   ],
   imports: [
     BrowserModule,
