@@ -52,7 +52,7 @@ export class AuthService {
   private refreshURL = 'https://fullstacktodoapp-back-2-0.onrender.com/refresh'
   private logoutURL = 'https://fullstacktodoapp-back-2-0.onrender.com/logout'
   private passwordResetURL = 'https://fullstacktodoapp-back-2-0.onrender.com/password-reset'
-  private emailVerificationURL = 'https://fullstacktodoapp-back-2-0.onrender.com/password-reset/'
+  private emailVerificationURL = 'https://fullstacktodoapp-back-2-0.onrender.com/verify-email/'
 
   constructor(private http: HttpClient) { }
 
@@ -96,7 +96,7 @@ export class AuthService {
 
   async verifyEmail(token: string) {
     try {
-      const res = await firstValueFrom(this.http.get<{accessToken: string}>(`${this.emailVerificationURL}/${token}`))
+      const res = await firstValueFrom(this.http.get<{accessToken: string}>(`${this.emailVerificationURL}${token}`))
       console.log(res.accessToken)
       localStorage.setItem('accessToken', JSON.stringify(res.accessToken))
     } catch (err) {
