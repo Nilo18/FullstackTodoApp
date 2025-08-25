@@ -26,6 +26,7 @@
         .smallerErrMsg {
             height: 10px;
             font-size: 12px;
+            color: red
         }
     }
 
@@ -43,6 +44,11 @@
 
     button:hover {
         background-color: rgb(35, 73, 213);
+    }
+
+    .errMsg {
+        height: 10px;
+        font-size: 12px;
     }
 }
 

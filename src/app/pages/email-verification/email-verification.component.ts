@@ -10,6 +10,9 @@ import { AuthService } from '../../services/auth.service';
 })
 export class EmailVerificationComponent {
   constructor(private route: ActivatedRoute, private authService: AuthService, private router: Router) {}
+  gotError: boolean = false
+  isVerifying: boolean = true;
+  errMsg: string = ''
 
   async ngOnInit() {
     // Get token from the route parameters
@@ -25,9 +28,10 @@ export class EmailVerificationComponent {
         return
       } 
       this.router.navigate(['/home'])
-    } catch(err) {
-      console.log('Error: ', err)
-      throw new Error('Failed to verify email.')
+    } catch(err: any) {
+      this.isVerifying = false
+      this.gotError = true
+      this.errMsg = err.error.message
     }
   }
 

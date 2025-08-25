@@ -11,6 +11,8 @@ import { Router } from '@angular/router';
 export class SignupComponent {
   form!: FormGroup
   signingUp: boolean = false
+  errMsg: string = ''
+  gotError: boolean = false
 
   constructor(private fb: FormBuilder, private authService: AuthService, private router: Router) {}
 
@@ -26,9 +28,16 @@ export class SignupComponent {
   }
 
   async onSubmit(credentials: SignUpCredentials) {
-    this.signingUp = true;
-    await this.authService.signUpUser(credentials)
-    this.router.navigate(['/home'])
+    try {
+      this.signingUp = true;
+      await this.authService.signUpUser(credentials)
+    } catch(err: any) {
+      this.gotError = true;
+      this.signingUp = false;
+      console.log(err.error.message)
+      this.errMsg = err.error.message
+    }
+
   }
 
   // Getters for easy template access

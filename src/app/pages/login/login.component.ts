@@ -34,7 +34,7 @@ export class LoginComponent {
     } catch(err: any) {
       this.gotError = true;
       this.loggingIn = false  
-      this.errMsg = err.error
+      this.errMsg = err.error.message
     }
 
   }

@@ -78,7 +78,7 @@ export class AuthService {
       this.isAuthenticating = true
     } catch(err) { 
       console.log(err)
-      throw new Error('Sign up failed.') // Exit the function incase an error occurs 
+      throw err // Rethrow the error directly so it's message property is accessible
     }
   }
 
@@ -87,10 +87,9 @@ export class AuthService {
       const response = await firstValueFrom(this.http.post<{accessToken: string}>(this.loginURL, credentials, {withCredentials: true}))
       localStorage.setItem('accessToken', JSON.stringify(response.accessToken))
       this.isAuthenticating = true
-      const refreshToken = document.cookie.includes('refreshToken')
-    } catch(err) {
+    } catch(err: any) {
       console.log(err)
-      throw new Error('Login failed.')
+      throw err
     }
   }
 
@@ -102,7 +101,7 @@ export class AuthService {
       return res.accessToken
     } catch (err) {
       console.log('Error while trying to verify the email: ', err)
-      throw new Error("Couldn't complete email verification.")
+      throw err
     }
   }
 
@@ -110,8 +109,8 @@ export class AuthService {
     try {
       localStorage.removeItem('accessToken')
     } catch(err) {
-      console.log(err)
-      throw new Error("Logout failed.")
+      console.log('Failed to log out: ', err)
+      throw err
     }
   }
 
@@ -128,8 +127,8 @@ export class AuthService {
       localStorage.setItem('accessToken', JSON.stringify(res.accessToken)) 
       this.isAuthenticating = true
     } catch (err: any) {
-      console.log(err.error)
-      throw new Error("Couldn't reset password")
+      console.log('Failed to reset password: ',err)
+      throw err
     }
   }
 

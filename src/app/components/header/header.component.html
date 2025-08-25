@@ -2,7 +2,7 @@
     <div class="header">
         <h1>TaskManager</h1>
         <div class="header__RightSection">
-            <p *ngIf="isLoggingOut">Logging out...</p>
+            <p [class.errMsg]="gotError">{{isLoggingOut? 'Logging out...' : gotError ? errMsg : ''}}</p>
             <button (click)="logout()" [disabled]="isLoggingOut">Log Out</button>
         </div>
     </div>

@@ -1,1 +1,1 @@
-<h1>Verifying...</h1>
+<h1 [class.largeErrMsg]="gotError">{{isVerifying ? 'Verifying...' : gotError ? errMsg : ''}}</h1>

@@ -10,6 +10,8 @@ import { Router } from '@angular/router';
 export class HeaderComponent {
   constructor(private authService: AuthService, private router: Router) {}
   isLoggingOut: boolean = false;
+  gotError: boolean = false;
+  errMsg: string = ''
 
   navigateAndReload() {
       this.router.navigate(['/signup']).then(() => {
@@ -18,8 +20,14 @@ export class HeaderComponent {
   }
 
   async logout() {
-    this.isLoggingOut = true
-    await this.authService.logoutUser()
-    this.navigateAndReload()
+    try {
+      this.isLoggingOut = true
+      await this.authService.logoutUser()
+      this.navigateAndReload()
+    } catch (err: any) {
+      this.isLoggingOut = false;
+      this.gotError = true;
+      this.errMsg = err.error.message
+    }
   }
 }

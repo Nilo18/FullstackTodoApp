@@ -14,6 +14,7 @@ export class PasswordResetComponent {
   resetForm!: FormGroup
   reqWasSent: boolean = false
   gotError: boolean = false
+  errMsg: string = ''
 
   ngOnInit() {
     this.resetForm = this.fb.group({
@@ -30,6 +31,8 @@ export class PasswordResetComponent {
     } catch(err: any) {
       this.gotError = true
       this.reqWasSent = false // reset reqWasSent and allow the error to be displayed
+      console.log(err.error.message)
+      this.errMsg = err.error.message
     }
 
   }
