@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-password-reset-verification',
@@ -14,7 +14,7 @@ export class PasswordResetVerificationComponent {
   isSendingReq: boolean = false;
   errMsg: string = ''
 
-  constructor(private route: ActivatedRoute, private authService: AuthService, private fb: FormBuilder) {}
+  constructor(private router: Router, private route: ActivatedRoute, private authService: AuthService, private fb: FormBuilder) {}
 
   ngOnInit() {
     this.newPassword = this.fb.group({
@@ -46,6 +46,7 @@ export class PasswordResetVerificationComponent {
       const resetToken = this.route.snapshot.paramMap.get('token')
       this.isSendingReq = false
       await this.authService.resetPassword(newPass, resetToken)
+      this.router.navigate(['/home'])
     } catch(err: any) {
       this.gotError = true;
       this.isSendingReq = false
