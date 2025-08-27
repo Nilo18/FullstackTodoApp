@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, firstValueFrom } from 'rxjs';
 import { jwtDecode } from 'jwt-decode';
+import { AbstractControl } from '@angular/forms';
 
 // interfaces are different from struct because they don't have any real value or memory during runtime (execution)
 // They only exist at compile time to enforce better type safety to describe the shape of the object
@@ -14,6 +15,11 @@ export interface SignUpCredentials {
 export interface LoginCredentials {
   username: string,
   password: string
+}
+
+export interface PasswordResetCredentials {
+  email: string,
+  username: string
 }
 
 export interface DecodedToken {
@@ -120,16 +126,29 @@ export class AuthService {
     return !!this.accessToken
   }
 
-  async resetPassword(credentials: LoginCredentials) {
+  // This is for sending the password reset request on email
+  async resetPasswordReq(credentials: PasswordResetCredentials) {
     try {
-      const res = await firstValueFrom(this.http.put<{accessToken: string}>(this.passwordResetURL, credentials, {withCredentials: true}))
+      const res = await firstValueFrom(this.http.post(this.passwordResetURL, credentials, {withCredentials: true}))
       // Replaced the observable
-      localStorage.setItem('accessToken', JSON.stringify(res.accessToken)) 
+      // localStorage.setItem('accessToken', JSON.stringify(res.accessToken)) 
       this.isAuthenticating = true
     } catch (err: any) {
-      console.log('Failed to reset password: ',err)
+      console.log('Failed to send password reset request: ',err)
       throw err
     }
+  }
+
+  // This is for resetting the password
+  async resetPassword(newPassword: string, token: string | null) {
+    try {
+      const res = await firstValueFrom(this.http.put<{accessToken: string}>(`${this.passwordResetURL}/${token}`, newPassword, {withCredentials: true}))
+      console.log(res.accessToken)
+      localStorage.setItem('accessToken', JSON.stringify(res.accessToken))
+    } catch (err: any) {
+      console.log("Couldn't reset password.")
+      throw err
+    } 
   }
 
   getAccessToken() {

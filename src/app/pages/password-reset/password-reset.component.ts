@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { AuthService, LoginCredentials } from '../../services/auth.service';
+import { AuthService, LoginCredentials, PasswordResetCredentials } from '../../services/auth.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
@@ -18,16 +18,16 @@ export class PasswordResetComponent {
 
   ngOnInit() {
     this.resetForm = this.fb.group({
-      username: ['', [Validators.required]],
-      password: ['', [Validators.required]]
+      email: ['', [Validators.required, Validators.email]],
+      username: ['', [Validators.required]]
     })  
   }
 
-  async onSubmit(credentials: LoginCredentials) {
+  async onSubmit(credentials: PasswordResetCredentials) {
     try {
       this.reqWasSent = true; 
-      await this.authService.resetPassword(credentials)
-      this.router.navigate(['/home']) 
+      await this.authService.resetPasswordReq(credentials)
+      // this.router.navigate(['/home']) 
     } catch(err: any) {
       this.gotError = true
       this.reqWasSent = false // reset reqWasSent and allow the error to be displayed

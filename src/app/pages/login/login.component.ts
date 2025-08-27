@@ -40,36 +40,36 @@ export class LoginComponent {
   }
 
   get username() {
-  return this.loginForm.get('username')!;
-}
+    return this.loginForm.get('username')!;
+  }
 
-get password() {
-  return this.loginForm.get('password')!;
-}
+  get password() {
+    return this.loginForm.get('password')!;
+  }
 
-getUsernameError(): string {
-  if (this.username.hasError('required')) {
-    return 'Username is required.';
+  getUsernameError(): string {
+    if (this.username.hasError('required')) {
+      return 'Username is required.';
+    }
+    if (this.username.hasError('minlength')) {
+      return 'Username must be at least 3 characters.';
+    }
+    if (this.username.hasError('maxlength')) {
+      return 'Username cannot exceed 20 characters.';
+    }
+    return '';
   }
-  if (this.username.hasError('minlength')) {
-    return 'Username must be at least 3 characters.';
-  }
-  if (this.username.hasError('maxlength')) {
-    return 'Username cannot exceed 20 characters.';
-  }
-  return '';
-}
 
-getPasswordError(): string {
-  if (this.password.hasError('required')) {
-    return 'Password is required.';
+  getPasswordError(): string {
+    if (this.password.hasError('required')) {
+      return 'Password is required.';
+    }
+    if (this.password.hasError('minlength')) {
+      return 'Password must be at least 5 characters.';
+    }
+    if (this.password.hasError('maxlength')) {
+      return 'Password cannot exceed 100 characters.';
+    }
+    return '';
   }
-  if (this.password.hasError('minlength')) {
-    return 'Password must be at least 5 characters.';
-  }
-  if (this.password.hasError('maxlength')) {
-    return 'Password cannot exceed 100 characters.';
-  }
-  return '';
-}
 }
