@@ -7,6 +7,7 @@ import { authGuardGuard } from './guards/auth-guard.guard';
 import { signupBlockerGuard } from './guards/signup-blocker.guard';
 import { PasswordResetComponent } from './pages/password-reset/password-reset.component';
 import { EmailVerificationComponent } from './pages/email-verification/email-verification.component';
+import { PasswordResetVerificationComponent } from './pages/password-reset-verification/password-reset-verification.component';
 
 // pathMatch controls how the router matches the URL against a route's path
 const routes: Routes = [
@@ -16,7 +17,8 @@ const routes: Routes = [
   {path: 'verify-email/:token', component: EmailVerificationComponent},
   {path: 'home', component: HomepageComponent, canActivate: [authGuardGuard]},
   {path: 'login', component: LoginComponent, canActivate: [signupBlockerGuard]},
-  {path: 'password-reset', component: PasswordResetComponent, canActivate: [signupBlockerGuard]}
+  {path: 'password-reset', component: PasswordResetComponent, canActivate: [signupBlockerGuard]},
+  {path: 'password-reset/:token', component: PasswordResetVerificationComponent}
 ];
 
 @NgModule({
