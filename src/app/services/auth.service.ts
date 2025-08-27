@@ -102,7 +102,6 @@ export class AuthService {
   async verifyEmail(token: string) {
     try {
       const res = await firstValueFrom(this.http.get<{accessToken: string}>(`${this.emailVerificationURL}${token}`))
-      console.log(res.accessToken)
       localStorage.setItem('accessToken', JSON.stringify(res.accessToken))
       return res.accessToken
     } catch (err) {
@@ -143,7 +142,6 @@ export class AuthService {
   async resetPassword(newPassword: string, token: string | null) {
     try {
       const res = await firstValueFrom(this.http.put<{accessToken: string}>(`${this.passwordResetURL}/${token}`, newPassword, {withCredentials: true}))
-      console.log(res.accessToken)
       localStorage.setItem('accessToken', JSON.stringify(res.accessToken))
     } catch (err: any) {
       console.log("Couldn't reset password.")

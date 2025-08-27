@@ -23,8 +23,6 @@ export class SignupComponent {
       email: ['', [Validators.required, Validators.email, Validators.minLength(3), Validators.maxLength(100)]],
       password: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(100)]],
     })
-
-    console.log(this.authService.hasToken())
   }
 
   async onSubmit(credentials: SignUpCredentials) {
