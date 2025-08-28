@@ -2,10 +2,14 @@
     <div class="tasks" *ngIf="tasks.length > 0; else showMsg">
             <div *ngFor="let task of tasks">
                 <div class="tasks__taskContainer">
-                    <button (click)="deleteATask(task._id)">Delete</button>
+                    <!-- The button's text content is managed from scss file -->
+                     <div class="tasks__taskContainer__Deadline">
+                        <input type="datetime-local" class="tasks__taskContainer__Deadline__Date" [(ngModel)]="task.deadline" (change)="updateATask(task._id, task)">
+                        <button (click)="deleteATask(task._id)"></button>
+                    </div>
                     <div class="tasks__taskContainer__checkBox">
                         <p>{{task.taskName}}</p>
-                        <input type="checkbox" [(ngModel)]="task.completed" [disabled]="!shouldUpdate" (click)="updateATask(task._id, task)">
+                        <input type="checkbox" [(ngModel)]="task.completed" [disabled]="!shouldUpdate" (click)="updateCheckbox(task._id, task)">
                     </div>
                 </div>
             </div>

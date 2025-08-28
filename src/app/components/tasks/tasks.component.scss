@@ -1,7 +1,7 @@
 @import '../../../styles/mixins.scss';
 
 .tasks {
-    width: 700px;
+    width: 910px;
     min-height: 600px;
     padding-bottom: 10px;
     display: flex;
@@ -12,21 +12,38 @@
 
     .tasks__taskContainer {
         @include flexContainer;
-        width: 700px;
+        width: 910px;
         flex-direction: row-reverse;
         justify-content: space-between;
         gap: 10px;
         font-weight: bold;
         font-size: 24px;
         transition: 0.15s ease-in-out;
-        // padding-left: 5px;
         padding: 5px;
 
-        button {
-            @include basicButton;
-            // width: auto;
-            background-color: rgb(226, 1, 1);
-            color: white;
+        .tasks__taskContainer__Deadline {
+            @include flexContainer;
+            width: 300px;
+            height: 40px;
+            
+            gap: 10px;
+
+            .tasks__taskContainer__Deadline__Date {
+                width: 200px;
+                height: 40px;
+                padding: 10px;
+            }
+
+            button {
+                @include basicButton;
+                // width: auto;
+                background-color: rgb(226, 1, 1);
+                color: white;
+            }
+
+            button::after {
+                content: "Delete";
+            }
         }
 
         .tasks__taskContainer__checkBox {
@@ -53,17 +70,56 @@
     }
 }
 
+@media (min-width: 900px) and (max-width: 1198.98px) {
+    .tasks {
+        width: 880px;
+
+        .tasks__taskContainer {
+            width: 880px;
+
+            .tasks__taskContainer__checkBox {
+                P {
+                    font-size: 18px;
+                    width: 530px;
+                }
+            }
+        }
+    }
+}
+
 @media (min-width: 600px) and (max-width: 898.98px) {
     .tasks {
         width: 570px;
 
         .tasks__taskContainer {
             width: 570px;
+            padding: 0;
+
+            .tasks__taskContainer__Deadline {
+                width: 210px;
+                height: 40px;
+                padding: 10px;
+
+                .tasks__taskContainer__Deadline__Date {
+                    width: 170px;
+                    height: 40px;
+                    padding: 10px;
+                    font-size: 11px;
+                }
+
+                button {
+                    width: 40px;
+                }
+
+                button::after {
+                    content: "X";
+                }
+            }
 
             .tasks__taskContainer__checkBox {
                 P {
                     font-size: 18px;
-                    width: 430px;
+                    width: 320px;
                 }
             }
         }
@@ -77,11 +133,39 @@
 
         .tasks__taskContainer {
             width: 380px;
+            @include flexContainer;
+            flex-direction: column-reverse;
+
+            .tasks__taskContainer__Deadline {
+                width: 380px;
+                height: 40px;
+                padding: 2px;
+                font-size: 10px;
+
+                .tasks__taskContainer__Deadline__Date {
+                    width: 340px;
+                }
+
+                button {
+                    width: 30px;
+                }
+
+                button::after {
+                    content: "X";
+                }
+
+            }
 
             .tasks__taskContainer__checkBox {
+                flex-direction: row;
+
                 P {
-                    width: 240px;
+                    width: 340px;
                     font-size: 16px;
+                }
+
+                input {
+                    width: 30px;
                 }
             }
         }
@@ -95,18 +179,41 @@
 
         .tasks__taskContainer {
             width: 280px;
+            @include flexContainer;
+            flex-direction: column-reverse;
+            padding: 0;
 
-        .tasks__taskContainer__checkBox {
+            .tasks__taskContainer__checkBox {
+                flex-direction: row;
+
                 P {
-                    width: 160px;
+                    width: 230px;
                     font-size: 12px;
                 }
+
+                input {
+                    width: 30px;
+                }
             }
-            
-            button {
-                width: 80px;
-                font-size: 12px;
-                @include flexContainer
+                
+            .tasks__taskContainer__Deadline {
+                width: 280px;
+                height: 40px;
+                padding: 2px;
+                font-size: 10px;
+
+                .tasks__taskContainer__Deadline__Date {
+                    width: 230px;
+                }
+
+                button {
+                    width: 30px;
+                }
+
+                button::after {
+                    content: "X";
+                }
+
             }
         }
     }

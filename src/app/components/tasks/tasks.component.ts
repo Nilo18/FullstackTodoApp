@@ -2,6 +2,7 @@ import { Component, EventEmitter, Output } from '@angular/core';
 import { TasksService } from '../../services/tasks.service';
 import { AuthService } from '../../services/auth.service';
 import { HttpHeaders } from '@angular/common/http';
+import { Task } from '../../services/tasks.service';
 
 @Component({
   selector: 'app-tasks',
@@ -13,14 +14,19 @@ export class TasksComponent {
   taskWasAdded: boolean = false;
   shouldUpdate: boolean = true; // Flag for preventing spamming PUT requests
   // loading: boolean = true;
-  token!: string | null 
+  token!: string | null
+  deadlineString: string | null = '' 
 
   constructor(private tasksService: TasksService, private authService: AuthService) {}
 
   async ngOnInit() {
     // Subscribe to tasks$ to receive the latest value
+    // Convert the deadlines to ISO string for display
     this.tasksService.tasks$.subscribe(tasks => { 
-      this.tasks = tasks
+      this.tasks = tasks.map(task => ({
+        ...task,
+        deadline: task.deadline ? new Date(task.deadline).toISOString().slice(0, 16) : ''
+      }))
     }) 
     // console.log()
     const storedToken = localStorage.getItem('accessToken')
@@ -38,7 +44,7 @@ export class TasksComponent {
     this.shouldUpdate = !this.shouldUpdate
   }
 
-  async updateATask(id: string, updatedFields: any) {
+  async updateCheckbox(id: string, updatedFields: any) {
     if (this.shouldUpdate) {
       updatedFields.completed = !updatedFields.completed
       this.toggleDisabled() // Disable the checkbox
@@ -47,5 +53,10 @@ export class TasksComponent {
         this.toggleDisabled() // Enable it again after 3 secs
       }, 2000)
     } 
+  }
+
+  async updateATask(id: string, updatedFields: any) {
+    console.log(id, updatedFields)
+    await this.tasksService.updateTask(id, updatedFields, this.token)
   }
 }

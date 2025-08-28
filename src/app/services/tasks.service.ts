@@ -9,7 +9,8 @@ import { firstValueFrom } from 'rxjs';
 export interface Task {
   userId: number,
   taskName: string, 
-  completed: boolean
+  completed: boolean,
+  deadline?: Date // ? denotes an optional property in this case
 }
 
 @Injectable({
@@ -31,13 +32,14 @@ export class TasksService {
     })
   }
 
-  async getAllTasks(accessToken: string | null) {
+  async getAllTasks(accessToken: string | null): Promise<any[]> {
     try {
       const headers = this.createHeader(accessToken)
       // The backend expects the access token to be sent as a header
       // It is build that way to ensure that no one can make requests without having an access token
       const tasks = await this.http.get<any>(this.baseURL, {headers, withCredentials: true}).toPromise()
       this.tasksSubject.next(tasks) // next() changes the value of the subject
+      return tasks
     } catch(err) {
       console.log('Error', err)
       throw err
